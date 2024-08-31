@@ -1,0 +1,70 @@
+{
+    "name" : "jsimo237/laravel-repository-pattern",
+    "description" : "A Laravel Repository - Pattern",
+    "keywords": [
+        "laravel",
+        "laravel repository",
+        "laravel repository pattern",
+        "laravel service",
+        "base service",
+        "service",
+        "repository",
+        "base repository",
+        "laravel service and repository",
+        "service and repository",
+        "repository",
+        "eloquent",
+        "model",
+        "cache",
+        "code generator",
+        "laravel skeleton",
+        "laravel boilerplate"
+    ],
+    "homepage" : "https://github.com/jsimo237/laravel-repository-pattern",
+    "version": "1.0",
+    "support" : {
+        "issues" : "https://github.com/jsimo237/laravel-repository-pattern/issues"
+    },
+    "authors" : [
+        {
+            "name" : "Simo Joel",
+            "email" : "joelsimooverride@gmail.com",
+            "role": "Developper",
+            "homepage": "mailto:joelsimooverride@gmail.com"
+        }
+    ],
+    "license" : "MIT",
+    "require" : {
+        "php": "^7.3|^8",
+        "ext-json": "*",
+        "ext-ctype": "*",
+        "ext-filter": "*",
+        "ext-mbstring": "*",
+        "ext-pdo": "*",
+        "illuminate/support": "^8.0 || ^9.0 || ^10.0"
+    },
+    "require-dev": {
+        "laravel/framework": "^6.0|^7.0|^8.74|^9.0|^10.0|^11.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload" : {
+        "files": [
+            "src/helper.php"
+        ],
+        "psr-4" : {
+            "Jsimo237\\LaravelRepositoryPattern\\" : "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jsimo237\\LaravelRepositoryPattern\\ServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-master": "master",
+            "dev-main": "main"
+        }
+    }
+}
