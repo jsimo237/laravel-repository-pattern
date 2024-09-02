@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Jsimo237\LaravelRepositoryPattern\Commands;
+namespace Jsimo\LaravelRepositoryPattern\Commands;
 
 use Illuminate\Console\Command;
 

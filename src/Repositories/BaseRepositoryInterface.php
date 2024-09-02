@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Jsimo237\LaravelRepositoryPattern\Repositories;
+namespace Jsimo\LaravelRepositoryPattern\Repositories;
 
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
 
 interface BaseRepositoryInterface {
 
@@ -16,43 +16,68 @@ interface BaseRepositoryInterface {
     public function create(array $data);
 
     /**
-     * @param mixed $id
+     * @param int|string|Model $id
      * @param array $data
      * @return mixed
      */
     public function update($id,array $data);
 
     /**
-     * @param int|string|array $id
+     * @param int|string|Model $id
      * @return mixed
      */
     public function archive($id);
 
     /**
-     * @param int|string|array|Collection $id
+     * @param int|string|Model $id
      * @return mixed
      */
     public function delete($id);
 
-    /**
-     * @param null|string|array|callable $$inputs
-     * @return mixed
-     */
-    public function all($inputs) ;
-
 
     /**
-     * @param int|string|array|Collection $id
+     * @param array $data
      * @return mixed
      */
-    public function find($id) ;
+    public function createMany(array $data);
 
-//    /**
-//     * @param Request $request
-//     * @param array $data
-//     * @return mixed
-//     */
-   // public function validate($request, $data) ;
+    /**
+     * @param array $data
+     * @return mixed
+     */
+    public function updateMany(array $data);
+
+    /**
+     * @param array $data
+     * @return mixed
+     */
+    public function archiveMany(array $data);
+
+    /**
+     * @param array $data
+     * @return mixed
+     */
+    public function deleteMany(array $data);
+
+    /**
+     * @param null $inputs
+     * @return mixed
+     */
+    public function all($inputs = null) ;
+
+    /**
+     * @param int|string|Model $search
+     * @param bool $exception
+     * @return mixed
+     */
+    public function find($search,$exception = false) ;
+
+    /**
+     * @param int|string|Model $search
+     * @param bool $exception
+     * @return mixed
+     */
+    public function show($search,$exception = false) ;
 
 
 }

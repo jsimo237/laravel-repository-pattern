@@ -1,6 +1,6 @@
 <?php
 
-namespace Jsimo237\LaravelRepositoryPattern;
+namespace Jsimo\LaravelRepositoryPattern;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 //use Illuminate\Database\Schema\Blueprint;

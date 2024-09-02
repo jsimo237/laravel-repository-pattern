@@ -1,5 +1,5 @@
 {
-    "name" : "jsimo237/laravel-repository-pattern",
+    "name" : "jsimo/laravel-repository-pattern",
     "description" : "A Laravel Repository - Pattern",
     "keywords": [
         "laravel",
@@ -20,10 +20,10 @@
         "laravel skeleton",
         "laravel boilerplate"
     ],
-    "homepage" : "https://github.com/jsimo237/laravel-repository-pattern",
+    "homepage" : "https://github.com/Jsimo/laravel-repository-pattern",
     "version": "1.0",
     "support" : {
-        "issues" : "https://github.com/jsimo237/laravel-repository-pattern/issues"
+        "issues" : "https://github.com/Jsimo/laravel-repository-pattern/issues"
     },
     "authors" : [
         {
@@ -53,13 +53,13 @@
             "src/helper.php"
         ],
         "psr-4" : {
-            "Jsimo237\\LaravelRepositoryPattern\\" : "src/"
+            "Jsimo\\LaravelRepositoryPattern\\" : "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Jsimo237\\LaravelRepositoryPattern\\ServiceProvider"
+                "Jsimo\\LaravelRepositoryPattern\\ServiceProvider"
             ]
         },
         "branch-alias": {

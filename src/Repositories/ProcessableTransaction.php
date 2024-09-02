@@ -1,12 +1,14 @@
 <?php
 
 
-namespace Jsimo237\LaravelRepositoryPattern\Repositories;
+namespace Jsimo\LaravelRepositoryPattern\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use \Closure;
 
 trait ProcessableTransaction {
 
@@ -16,19 +18,20 @@ trait ProcessableTransaction {
      * @param array $data
      * @param bool $exception
      * @return array
+     * @throws ValidationException
      */
     public function validate(FormRequest $formRequest,array $data, $exception = true){
         $rules = (method_exists($formRequest, 'rules') ? $formRequest->rules() : []);
         $messages = (method_exists($formRequest, 'messages') ? $formRequest->messages() : []);
         $attributes = (method_exists($formRequest, 'attributes') ? $formRequest->attributes() : []);
 
-        $validator = validator($data,$rules,$messages,$attributes);
+        $validator = Validator::make($data,$rules,$messages,$attributes);
 
         $failed = $validator->fails();
 
         if ($failed){
-            throw_if($exception, new ValidationException($validator) );
-            return  $validator->messages()->errors();
+            if ($exception) throw new ValidationException($validator);
+            return  $validator->errors()->messages();
         }
 
         // validation pass
@@ -55,7 +58,7 @@ trait ProcessableTransaction {
      * @param null|Closure $after
      * @return array
      */
-    public function execute(array $options , $before = null , $after  = null ){
+    public function execute(array $options = [] , $before = null , $after  = null ){
 
         DB::beginTransaction();
         $response = [ "success" => false, "message" => "Failed", ];

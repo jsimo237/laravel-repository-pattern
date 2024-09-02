@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Jsimo237\LaravelRepositoryPattern\Repositories;
+namespace Jsimo\LaravelRepositoryPattern\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
@@ -9,7 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
-abstract class SimpleRepository extends BaseRepository {
+abstract class SimpleRepository implements BaseRepositoryInterface {
 
     public $model = null;
     public $resource = null;

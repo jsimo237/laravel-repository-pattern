@@ -1,6 +1,6 @@
 <?php
 
-namespace Jsimo237\LaravelRepositoryPattern\Facades;
+namespace Jsimo\LaravelRepositoryPattern\Facades;
 
 use Illuminate\Support\Facades\Facade as IlluminateFacade;
 

@@ -1,0 +1,19 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+
+Route::prefix("profile")->name("profile.")->group(function () {
+    Route::get('/', [ProfileController::class, 'index'])->name('index');
+
+    Route::patch('update', [ProfileController::class, 'update'])->name('update');
+
+    Route::delete('delete', [ProfileController::class, 'destroy'])->name('destroy');
+
+
+    Route::prefix("update")->name("update.")->group(function () {
+        Route::put('password', [ProfileController::class, 'updatePassword'])->name('password');
+        Route::put('personal-infos', [ProfileController::class, 'updatePersonalInfos'])->name('personal-infos');
+        Route::post('avatar', [ProfileController::class, 'updateAvatar'])->name('avatar');
+    });
+});

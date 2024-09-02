@@ -1,0 +1,10 @@
+<?php
+
+namespace $NAMESPACE$;
+
+use Jsimo\LaravelRepositoryPattern\Models\BaseModel;
+
+class $CLASS_NAME$ extends BaseModel {
+
+    //
+}
