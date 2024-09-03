@@ -6,8 +6,6 @@ namespace Jsimo\LaravelRepositoryPattern\Repositories;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 abstract class BaseRepository implements BaseRepositoryInterface {
@@ -17,6 +15,7 @@ abstract class BaseRepository implements BaseRepositoryInterface {
     protected $model = null;
     protected $resource = null;
     protected $validator = null;
+    private $returnResource = false;
 
     /**
      * BaseRepository constructor.
@@ -104,7 +103,7 @@ abstract class BaseRepository implements BaseRepositoryInterface {
 
 
         $models = ($paginate) ? $model->paginate($per_page,$columns) : $model->get();
-        return $this->resource->collection($models);
+        return ($this->returnResource) ? $this->resource->collection($models) : $models;
     }
 
     /**
@@ -165,9 +164,9 @@ abstract class BaseRepository implements BaseRepositoryInterface {
         return $model->forceDelete();
     }
 
-    public function show($search){
-        $model = $this->find($search);
-        return ($model) ? $this->resource->make($model) : $model;
+    public function show($search, $exception = false){
+        $model = $this->find($search,$exception);
+        return ($this->returnResource) ? $this->resource->make($model) : $model;
     }
 
 

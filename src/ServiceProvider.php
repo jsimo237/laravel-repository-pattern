@@ -35,6 +35,7 @@ class ServiceProvider extends BaseServiceProvider {
 
         $this->commands([
             Commands\CreateRepositoryCommand::class,
+            Commands\CreateModelCommand::class,
         ]);
     }
 

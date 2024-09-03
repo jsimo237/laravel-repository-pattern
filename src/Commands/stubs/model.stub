@@ -1,0 +1,49 @@
+<?php
+
+namespace {{ namespace }};
+
+//use Jsimo\LaravelRepositoryPattern\Models\BaseModel;
+use Jsimo\LaravelRepositoryPattern\Traits\Validable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class {{ class }} extends Model {
+
+    use HasFactory, Validable;
+
+
+    //RELATIONS
+
+
+    //SCOPES
+
+
+    //GETTERS
+
+
+    //SETTERS
+
+
+    //ORTHER FUNCTIONS
+
+
+    // ALL VALIDATIONS PROMPTS
+
+    public function validationRules() : array{
+        return [
+          //
+        ];
+    }
+
+    public function validationMessages() : array{
+        return [
+            //
+        ];
+    }
+
+    public function validationAttributes() : array{
+         return [
+            //
+         ];
+    }
+}

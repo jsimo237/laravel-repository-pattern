@@ -1,0 +1,22 @@
+<?php
+
+namespace {{ namespace }};
+
+
+use Jsimo\LaravelRepositoryPattern\Repositories\BaseRepository;
+{{ namespacedModel }}
+{{ namespacedResource }}
+{{ namespacedValidator }}
+
+class {{ class }} extends BaseRepository {
+
+    public function __construct(){
+        parent::__construct(
+                   {{ model }},
+                   {{ resource }},
+
+               );
+    }
+
+}
+

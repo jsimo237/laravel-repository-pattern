@@ -15,22 +15,6 @@ abstract class BaseModel extends Model {
     protected $guarded = [];
 
     /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool $timestamps
-     */
-    public $timestamps = true;
-
-
-    /**
-     * Indicates whether the model uses soft deletes.
-     *
-     * @var bool $softDelete
-     */
-    protected $softDelete = true;
-
-
-    /**
      * Gets the validation error messages.
      * @param bool $returnArray
      *

@@ -3,19 +3,24 @@
 
 namespace Jsimo\LaravelRepositoryPattern\Commands;
 
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Console\GeneratorCommand;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Pluralizer;
+use Illuminate\Support\Str;
 
-class CreateRepositoryCommand extends Command{
+class CreateRepositoryCommand extends GeneratorCommand{
+
+    use HasStub;
 
     public $signature = "make:repository {name}";
 
-    public $desription = "My Spx Command";
+    public $description = "Create a new repository class";
 
+    private $className = null;
 
-    protected $namespace = "App\\Repositories";
-
+    const MODELS_NAMESPACE = "App\\Models";
+    const RESOURCES_NAMESPACE = "App\\Http\\Resources";
+    const VAlIDATOR_NAMESPACE = "App\\Http\\Requests";
 
 
     /**
@@ -25,49 +30,66 @@ class CreateRepositoryCommand extends Command{
      */
     public function handle(){
 
+
+        // First we need to ensure that the given name is not a reserved word within the PHP
+        // language and that the class name will actually be valid. If it is not valid we
+        // can error now and prevent from polluting the filesystem using invalid files.
+        if ($this->isReservedName($this->getNameInput())) {
+            $this->components->error('The name "'.$this->getNameInput().'" is reserved by PHP.');
+
+            return false;
+        }
+
+
+//        if (parent::handle() === false && ! $this->option('force')) {
+//            return false;
+//        }
+
+        //dd($this->getDefaultNamespace($this->rootNamespace()));
+
+        $name = Str::studly(class_basename($this->getNameInput()));
+       // $name = $this->qualifyClass($name);
+
+
         $inputs = [];
-        $inputs['model'] = $this->ask('Path or Name of Eloquent model filename');
-        $inputs['resource'] = $this->ask('Path or Name of Http Resource filename');
-        $inputs['controller'] = $this->ask('Path or Name of Http Controller filename',null);
-        $inputs['route_file'] = $this->ask('Path or Name of route filename',null);
-
-        $repositoryFilePath = $this->getRepositoriesFilePath();
-        $modelFilePath = $this->getRepositoriesFilePath();
-        $resourceFilePath = $this->getRepositoriesFilePath();
-
-        $this->makeDirectory(dirname($repositoryFilePath));
+        $inputs['model'] = $this->ask('Path or Name of eloquent model filename',$name);
+        $inputs['resource'] = $this->ask('Path or Name of Http Resource filename',$name);
+        $inputs['controller'] = $this->ask('Path or Name of Http Controller filename',$name);
+        $inputs['route'] = $this->ask('Path or Name of route filename',strtolower($name));
 
 
-        if (!$this->files->exists($modelFilePath)) {
-            $this->createModelFile($modelFilePath);
-            $this->info("[model-file] : {$modelFilePath} => created");
-        }
+        $this->getRepositoryFileContent($inputs);
 
 
-        if (!$this->files->exists($resourceFilePath)) {
-            $this->createResourceFile($resourceFilePath);
-            $this->info("[resource-file] : {$resourceFilePath} => created");
-        }
 
-        if ($inputs['controller']){
-            if (!$this->files->exists($modelFilePath)) {
-                $this->createControllerFile($modelFilePath);
-                $this->info("[controller-file] : {$modelFilePath} => created");
-            }
-        }
-        if ($inputs['route_file']){
-            if (!$this->files->exists($modelFilePath)) {
-                $this->createRouteFile($modelFilePath);
-                $this->info("[route-file] : {$modelFilePath} => created");
-            }
-        }
+//        if ($inputs['model']) {
+//            $this->call("make:repository.model",['name' =>  $inputs['model']]);
+//        }
+//
+//        if ($inputs['resource']) {
+//            $this->call("make:repository.resource",['name' =>  $inputs['resource']]);
+//        }
+//
+//        if ($inputs['controller']) {
+//            $this->call("make:repository.controller",['name' =>  $inputs['controller']]);
+//        }
+//
+//        if ($inputs['route']) {
+//            $this->call("make:repository.route",['name' =>  $inputs['route']]);
+//        }
+    }
 
-        if (!$this->files->exists($repositoryFilePath)) {
-            $this->createResourceFile($repositoryFilePath);
-            $this->info("[repository-file] : {$repositoryFilePath} => created");
-        }
 
-        $this->files->put($repositoryFilePath, $this->getRepositoryFileContent());
+
+    /**
+     * Get the default namespace for the class.
+     *
+     * @param  string  $rootNamespace
+     * @return string
+     */
+    protected function getDefaultNamespace($rootNamespace){
+        //dd($rootNamespace);
+        return $rootNamespace.'\\Repositories';
     }
 
 
@@ -77,62 +99,122 @@ class CreateRepositoryCommand extends Command{
      * @return string
      */
     public function getStubPath($file){
-        return __DIR__ . "../../stubs/repository-pattern/$file";
+        return __DIR__ . "/stubs/$file";
     }
 
-    /**
-     * Formate le nom du fichier en un nom utilisé pour la création de fichier
-     * @return string
-     */
-    protected function getRealFileName(){
-        $name = $this->argument('name');
+    protected function generateFile($name){
 
-        // Ex : $name = "UserRepository"
 
-        if (str_contains("Repository",$name)){
+        // Next, We will check to see if the class already exists. If it does, we don't want
+        // to create the class and overwrite the user's code. So, we will bail out so the
+        // code is untouched. Otherwise, we will continue generating this class' files.
+        if ((! $this->hasOption('force') ||
+                ! $this->option('force')) &&
+            $this->alreadyExists(trim($name))) {
+            $this->components->error($this->type.' already exists.');
 
+            return false;
         }
 
-        $name = str_replace([' ','-'],'_',$name);
-        $wordsOfActionPage = explode("_",$name);
-
-        if ($wordsOfActionPage){
-            /**
-            array:4 [
-            0 => "Transmgt"
-            1 => "Differed"
-            2 => "Collections"
-            3 => "View"
-            ]
-             */
-            $wordsTruncated =  array_map(fn($word)=>ucfirst($word),$wordsOfActionPage);
-
-
-            /**  "UserRepository" */
-            return implode("",$wordsTruncated);
-
-        }
     }
 
 
     /**
      * Le contenu par défaut du repository qui sera généré
      *
+     * @param $inputs
      * @return bool|mixed|string
+     * @throws FileNotFoundException
      */
-    public function getRepositoryFileContent(){
-        $model_path = "";
-        $resource_path = "";
+    public function getRepositoryFileContent($inputs){
+
+        $file_path = $this->qualifyClass($this->getNameInput(),"Repository");
+
+        $class_name = Str::studly(class_basename($file_path));
+
+
+        $path = $this->getPath($file_path);
+
+
+        // Next, We will check to see if the class already exists. If it does, we don't want
+        // to create the class and overwrite the user's code. So, we will bail out so the
+        // code is untouched. Otherwise, we will continue generating this class' files.
+        if ((! $this->hasOption('force') ||
+                ! $this->option('force')) &&
+            $this->alreadyExists($this->getNameInput())) {
+            $this->components->error($this->type.' already exists.');
+
+            return false;
+        }
+
+        // Next, we will generate the path to the location where this class' file should get
+        // written. Then, we will build the class and make the proper replacements on the
+        // stub files so that it gets the correctly formatted namespace and class name.
+        $this->makeDirectory($path);
+
+        $model = $inputs['model'] ; // User
+        $resource = $inputs['resource'] ; // User
+        $validator = $inputs['validator'] ?? "Papa" ; // User
+
+        $model_name = Str::studly(class_basename($model));
+        $resource_name = Str::studly(class_basename($resource));
+        $validator_name = Str::studly(class_basename($validator));
+
+
+        $resource_name_suffixe = Str::substr($resource_name,-8,8); // les 08 derniers caractères
+
+
+        if (strtolower($resource_name_suffixe) !== "resource") $resource_name .="Resource";
+
+
+        $namespace = $this->getNamespace($this->qualifyClass($this->getNameInput()));
+        $class = $this->qualifyClass($this->getNameInput());
+        $model    = $this->qualifyClass($inputs['model']); // User
+
+        $namespacedModel = $this->getNamespace($this->qualifyClass($model)); // App\\Models\\User
+        $namespacedResource = $this->getNamespace($resource); // App\\Http\\Resources\\UserResource
+
+
 
         $stubVariables = [
-            'NAMESPACE'            => $this->namespace,
-            'MODEL'                => $model_path,
-            'RESOURCE'             => $resource_path,
-            'CLASS_NAME'           => $this->getSingularClassName($this->getRealFileName()),
+            'namespace'            => $namespace,
+            'class'                => $class_name,
+            'class1'                => $class,
+            'model'                => "$model_name::class",
+            'resource'             => "$resource_name::class",
+           // 'validator'            => $validator,
+
+//            'namespacedModel'      => "use $namespacedModel;",
+//            'namespacedResource'   => "use $namespacedResource;",
+//            'namespacedValidator'   => "",
         ];
 
+      //  dd($stubVariables,$path,$model);
 
-        return $this->getStubContents( $this->getStubPath("repository.stub"), $stubVariables);
+
+
+       $content = $this->getStubContents( $this->getStubPath("repository.stub"), $stubVariables);
+
+
+        $this->files->put($path, $content);
+
+        $this->call('make:repository.model',
+                    [
+                        'name' => $model,
+                        '--repository' => $path
+                    ]
+                );
+
+        $info = $this->type;
+
+        if (windows_os()) {
+            $path = str_replace('/', '\\', $path);
+        }
+
+        $this->components->info(sprintf('%s [%s] created successfully.', $info, $path));
+
+
+
     }
 
     protected function createModelFile(){}
@@ -182,57 +264,9 @@ class CreateRepositoryCommand extends Command{
     }
 
 
-    /**
-     * Remplace les variables du talon (clé) par la valeur defini
-     *
-     * @param $stub
-     * @param array $stubVariables
-     * @return bool|mixed|string
-     */
-    public function getStubContents($stub , $stubVariables = []){
-        $contents = file_get_contents($stub);
 
-        foreach ($stubVariables as $search => $replace) {
-            $contents = str_replace('$'.$search.'$' , $replace, $contents);
-        }
 
-        return $contents;
+    protected function getStub(){
+       return __DIR__ . "/stubs/repository.stub";
     }
-
-    /**
-     * Obtenir le chemin complet de la classe controlleur générée
-     *
-     * @return string
-     */
-    public function getRepositoriesFilePath(){
-        return base_path($this->getClassPath()) . '.php';
-    }
-
-    /**
-     * Retourner le nom en majuscules au singulier
-     * @param $name
-     * @return string
-     */
-    public function getSingularClassName($name){
-        return ucwords(Pluralizer::singular($name));
-    }
-
-    /**
-     * Créer le répertoire pour la classe si nécessaire.
-     *
-     * @param  string  $path
-     * @return string
-     */
-    protected function makeDirectory($path){
-        if (!$this->files->isDirectory($path)) {
-            $this->files->makeDirectory($path, 0777, true, true);
-        }
-
-        return $path;
-    }
-
-    protected function getClassPath(){
-        return $this->namespace .'\\' .$this->getSingularClassName($this->getRealFileName())."Controller";
-    }
-
 }

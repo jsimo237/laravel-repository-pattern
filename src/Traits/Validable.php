@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Jsimo\LaravelRepositoryPattern\Models;
+namespace Jsimo\LaravelRepositoryPattern\Traits;
 
 
 use Illuminate\Support\Facades\Validator;
