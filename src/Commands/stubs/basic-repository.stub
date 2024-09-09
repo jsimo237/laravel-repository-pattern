@@ -3,9 +3,10 @@
 namespace {{ namespace }};
 
 use Jsimo\LaravelRepositoryPattern\Pattern\BasicRepository;
+use Jsimo\LaravelRepositoryPattern\Pattern\BaseRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
 
-class {{ class }} extends BasicRepository {
+class {{ class }} extends BasicRepository implements BaseRepositoryInterface {
 
       /**
       * @param array $data

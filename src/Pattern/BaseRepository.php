@@ -102,7 +102,7 @@ abstract class BaseRepository implements BaseRepositoryInterface {
 
 
         $models = ($paginate) ? $model->paginate($per_page,$columns) : $model->get();
-        return ($this->returnResource) ? $this->resource->collection($models) : $models;
+        return ($this->resource) ? $this->resource->collection($models) : $models;
     }
 
     /**
@@ -134,7 +134,7 @@ abstract class BaseRepository implements BaseRepositoryInterface {
         $model = $this->find($search);
        // $payload = $model->validate($data,config("repository-pattern.exception_when_validate",true));
 
-        $payload = $this->validate(new $this->validator,$data);
+        $payload = $this->validate($this->validator,$data);
         return  $this->process(
                     [
                         "action" => RepositoryActionType::UPDATE,
@@ -164,7 +164,7 @@ abstract class BaseRepository implements BaseRepositoryInterface {
 
     public function show($search, $exception = false){
         $model = $this->find($search,$exception);
-        return ($this->returnResource) ? $this->resource->make($model) : $model;
+        return ($this->resource) ? $this->resource->make($model) : $model;
     }
 
 
