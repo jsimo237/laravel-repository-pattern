@@ -1,19 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+{{ controllerNamespace }}
 
+Route::prefix("{{ prefix }}")->name("{{ prefix }}.")->group(function () {
 
-Route::prefix("profile")->name("profile.")->group(function () {
-    Route::get('/', [ProfileController::class, 'index'])->name('index');
+    Route::get('/', [{{ controller }}, 'list'])->name('list');
+    Route::post('create-many', [{{ controller }}, 'createMany'])->name('createMany');
+    Route::post('update-many', [{{ controller }}, 'updateMany'])->name('updateMany');
+    Route::delete('archive-many', [{{ controller }}, 'archiveMany'])->name('archiveMany');
+    Route::delete('delete-many', [{{ controller }}, 'deleteMany'])->name('deleteMany');
 
-    Route::patch('update', [ProfileController::class, 'update'])->name('update');
-
-    Route::delete('delete', [ProfileController::class, 'destroy'])->name('destroy');
-
-
-    Route::prefix("update")->name("update.")->group(function () {
-        Route::put('password', [ProfileController::class, 'updatePassword'])->name('password');
-        Route::put('personal-infos', [ProfileController::class, 'updatePersonalInfos'])->name('personal-infos');
-        Route::post('avatar', [ProfileController::class, 'updateAvatar'])->name('avatar');
+    Route::prefix("{{ binding }}")->group(function () {
+        Route::get('/', [{{ controller }}, 'show'])->name('show');
+        Route::put('update', [{{ controller }}, 'update'])->name('update');
+        Route::delete('archive', [{{ controller }}, 'archive'])->name('archive');
+        Route::delete('delete', [{{ controller }}, 'delete'])->name('delete');
     });
 });

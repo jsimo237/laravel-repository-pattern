@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Jsimo\LaravelRepositoryPattern\Repositories;
+namespace Jsimo\LaravelRepositoryPattern\Pattern;
 
 
 use Illuminate\Database\Eloquent\Collection;
@@ -16,23 +16,30 @@ interface BaseRepositoryInterface {
     public function create(array $data);
 
     /**
-     * @param int|string|Model $id
+     * @param int|string|Model $search
      * @param array $data
      * @return mixed
      */
-    public function update($id,array $data);
+    public function update($search,array $data);
 
     /**
-     * @param int|string|Model $id
+     * @param int|string|Model $search
+     * @param bool $exception
      * @return mixed
      */
-    public function archive($id);
+    public function find($search,$exception = false) ;
 
     /**
-     * @param int|string|Model $id
+     * @param int|string|Model $search
      * @return mixed
      */
-    public function delete($id);
+    public function archive($search);
+
+    /**
+     * @param int|string|Model $search
+     * @return mixed
+     */
+    public function delete($search);
 
 
     /**
@@ -64,20 +71,5 @@ interface BaseRepositoryInterface {
      * @return mixed
      */
     public function all($inputs = null) ;
-
-    /**
-     * @param int|string|Model $search
-     * @param bool $exception
-     * @return mixed
-     */
-    public function find($search,$exception = false) ;
-
-    /**
-     * @param int|string|Model $search
-     * @param bool $exception
-     * @return mixed
-     */
-    public function show($search,$exception = false) ;
-
 
 }

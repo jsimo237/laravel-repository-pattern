@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Jsimo\LaravelRepositoryPattern\Repositories;
+namespace Jsimo\LaravelRepositoryPattern\Pattern;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +15,6 @@ abstract class BaseRepository implements BaseRepositoryInterface {
     protected $model = null;
     protected $resource = null;
     protected $validator = null;
-    private $returnResource = false;
 
     /**
      * BaseRepository constructor.
@@ -36,14 +35,14 @@ abstract class BaseRepository implements BaseRepositoryInterface {
             $this->model = (new $model);
 
             if ( !($this->model instanceof Model)){
-                throw new Exception("Eloquent Model objet $model must instance of Eloquent\Model");
+                throw new Exception("Eloquent Model object $model must instance of Eloquent\Model");
             }
 
             if ($resource and class_exists($resource)){
                 $this->resource = new $resource($this->model);
             }
 
-            $this->validator = $validator;
+            $this->validator = (new $validator);
         }
 
     }
@@ -112,10 +111,9 @@ abstract class BaseRepository implements BaseRepositoryInterface {
      * @throws ValidationException
      */
     public function create(array $data){
-//        $validator = (new $this->validator);
-//        $payload = $this->validate($validator,$data);
-        $payload = $this->model->validate($data,config("repository-pattern.exception_when_validate",true));
-        return  $this->execute(
+        $payload = $this->validate($this->validator,$data);
+//        $payload = $this->model->validate($data,config("repository-pattern.exception_when_validate",true));
+        return  $this->process(
                     [
                         "action" => RepositoryActionType::CREATE,
                         "data" => $data,
@@ -134,15 +132,15 @@ abstract class BaseRepository implements BaseRepositoryInterface {
      */
     public function update($search,array $data){
         $model = $this->find($search);
-        $payload = $model->validate($data,config("repository-pattern.exception_when_validate",true));
-//        $validator = new $this->validator(['id' => $id]);
-//        $payload = $this->validate($validator,$data);
-        return  $this->execute(
+       // $payload = $model->validate($data,config("repository-pattern.exception_when_validate",true));
+
+        $payload = $this->validate(new $this->validator,$data);
+        return  $this->process(
                     [
                         "action" => RepositoryActionType::UPDATE,
                         "data" => $data,
                         "payload" => $payload,
-                        "id" => $id,
+                        "search" => $search,
                     ],
                     fn (array $payload) => $this->handleBeforeUpdating($payload),
                     fn (Model $model,array $data) => $this->handleAfterUpdating($model,$data)

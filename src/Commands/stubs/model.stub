@@ -24,11 +24,10 @@ class {{ class }} extends Model {
     //SETTERS
 
 
-    //ORTHER FUNCTIONS
+    //OTHERS FUNCTIONS
 
 
     // ALL VALIDATIONS PROMPTS
-
     public function validationRules() : array{
         return [
           //

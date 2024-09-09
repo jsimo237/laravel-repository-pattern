@@ -10,6 +10,63 @@ use Illuminate\Support\Str;
 trait  HasStub {
 
     /**
+     * Retourne le chemin d’accès du fichier stub
+     * @param string $file
+     * @return string
+     */
+    public function getStubPath($file){
+        return __DIR__ . "/stubs/$file";
+    }
+
+
+    /**
+     * Get the default namespace for the class.
+     *
+     * @param  string  $rootNamespace
+     * @return string
+     */
+    protected function getDefaultNamespace($rootNamespace){
+        return $rootNamespace.self::NAMESPACE;
+    }
+
+    protected function checkIsReserved(){
+
+        // First we need to ensure that the given name is not a reserved word within the PHP
+        // language and that the class name will actually be valid. If it is not valid we
+        // can error now and prevent from polluting the filesystem using invalid files.
+        if ($this->isReservedName($this->getNameInput())) {
+            $this->components->error('The name "'.$this->getNameInput().'" is reserved by PHP.');
+            return false;
+        }
+
+
+//        if (parent::handle() === false && ! $this->option('force')) {
+//            return false;
+//        }
+
+    }
+
+    protected function checkAlreadyExist($path = null){
+
+        $path = $path ?? $this->getNameInput();
+
+        // Next, We will check to see if the class already exists. If it does, we don't want
+        // to create the class and overwrite the user's code. So, we will bail out so the
+        // code is untouched. Otherwise, we will continue generating this class' files.
+        if ( (!$this->hasOption('force') ||
+                !$this->option('force'))
+            && $this->files->exists($path)) {
+
+            $this->components->error($this->type."'{$path}'  already exists.");
+
+            return true;
+        }
+
+        return false;
+
+    }
+
+    /**
      * Remplace les variables du talon (clé) par la valeur defini
      *
      * @param $stub
@@ -66,7 +123,7 @@ trait  HasStub {
      * @param null $rootNamespace
      * @return string
      */
-    protected function qualifyClass($name, $suffix = null,$rootNamespace = null){
+    public function qualifyClass($name, $suffix = null,$rootNamespace = null){
         $name = ltrim($name, '\\/');
 
         $name = str_replace('/', '\\', $name);
@@ -85,6 +142,7 @@ trait  HasStub {
 
         return $this->qualifyClass(
             $this->getDefaultNamespace(trim($rootNamespace, '\\')).'\\'.$name
+//            $this->getDefaultNamespace(trim($rootNamespace, '\\'))
         );
     }
 

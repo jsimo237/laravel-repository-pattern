@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Jsimo\LaravelRepositoryPattern\Repositories;
+namespace Jsimo\LaravelRepositoryPattern\Pattern;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Jsimo\LaravelRepositoryPattern\Repositories;
+namespace Jsimo\LaravelRepositoryPattern\Pattern;
 
 
 abstract class RepositoryActionType {

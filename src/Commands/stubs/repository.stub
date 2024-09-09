@@ -2,21 +2,16 @@
 
 namespace {{ namespace }};
 
-
-use Jsimo\LaravelRepositoryPattern\Repositories\BaseRepository;
-{{ namespacedModel }}
-{{ namespacedResource }}
-{{ namespacedValidator }}
+use Jsimo\LaravelRepositoryPattern\Pattern\BaseRepository;
+{{ dependenciesNamespaces }}
 
 class {{ class }} extends BaseRepository {
 
-    public function __construct(){
-        parent::__construct(
-                   {{ model }},
-                   {{ resource }},
+     private $returnResource = false;
 
-               );
-    }
+     public function __construct(){
+        parent::__construct({{ dependencies }});
+     }
 
 }
 

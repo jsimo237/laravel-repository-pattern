@@ -4,7 +4,7 @@
 namespace Jsimo\LaravelRepositoryPattern\Controllers;
 
 
-use Jsimo\LaravelRepositoryPattern\Repositories\BaseRepository;
+use Jsimo\LaravelRepositoryPattern\Pattern\BaseRepository;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;

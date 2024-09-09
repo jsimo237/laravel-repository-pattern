@@ -4,29 +4,30 @@
 namespace Jsimo\LaravelRepositoryPattern\Commands;
 
 use Illuminate\Console\GeneratorCommand;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Pluralizer;
 use Illuminate\Support\Str;
 
-class CreateModelCommand extends GeneratorCommand{
+class MakeBasicRepositoryCommand extends GeneratorCommand {
 
     use HasStub;
 
-    public $signature = "make:repository.model {name}";
+    public $signature = "repository:create.basic {name}";
 
-    public $description = "Create a new eloquent model class";
+    public $description = "Create a new basic repository class";
 
-    const NAMESPACE = "\\Models";
+    const NAMESPACE = "\\Repositories";
 
-
+    /**
+     * Execute the console comma nd.
+     *
+     * @return mixed
+     */
     public function handle(){
-
 
         $this->checkIsReserved();
 
         $this->generateFileContent();
-
     }
+
 
 
     /**
@@ -59,9 +60,9 @@ class CreateModelCommand extends GeneratorCommand{
             'class'                => $class_name,
         ];
 
-        $content = $this->getStubContents( $this->getStubPath("basic-repositoy.stub"), $stubVariables);
+       $content = $this->getStubContents( $this->getStubPath("basic-repositoy.stub"), $stubVariables);
 
-        $this->files->put($path, $content);
+       $this->files->put($path, $content);
 
         $info = $this->type;
 
@@ -75,6 +76,7 @@ class CreateModelCommand extends GeneratorCommand{
 
 
     protected function getStub(){
-       return __DIR__ . "/stubs/model.stub";
+       return __DIR__ . "/stubs/basic-repositoy.stub";
     }
+
 }

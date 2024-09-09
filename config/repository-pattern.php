@@ -1,20 +1,19 @@
 <?php
 
 return [
-    "repositories_namespace" => env("REPO_PATTERN_NAMSPACE","App\\Repositories"),
-    "models_namespace" => env("REPO_PATTERN_NAMSPACE","App\\Models"),
-    "controllers_namespace" => env("REPO_PATTERN_NAMSPACE","App\\Http\\Controllers"),
-    "resources_namespace" => env("REPO_PATTERN_NAMSPACE","App\\Http\\Resources"),
+    "repositories_namespace" => "App\\Repositories",
 
-    "required_model" => env("REPO_PATTERN_REQUIRED_MODEL",true),
+    "models_namespace" => "App\\Models",
 
-    "required_resource" => env("REPO_PATTERN_REQUIRED_RESOURCE",true),
+    "controllers_namespace" => "App\\Http\\Controllers",
 
-    "required_validator" => env("REPO_PATTERN_VALIDATOR",true),
+    "resources_namespace" =>"App\\Http\\Resources",
+
+    "validators_namespace" =>"App\\Http\\Requests",
 
 
     /*
-     * The name of the query parameter used for pagination
+     * comment
      */
-    'pagination_parameter' => 'page',
+    'exception_when_validate' => true,
 ];
