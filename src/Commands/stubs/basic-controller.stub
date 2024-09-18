@@ -1,0 +1,15 @@
+<?php
+
+namespace {{ namespace }};
+
+
+use Jsimo\LaravelRepositoryPattern\Controllers\BasicController;
+{{ repositoryNamespace }}
+
+class {{ class }} extends BasicController {
+
+    public function __construct(){
+        parent::__construct({{ repository }});
+    }
+
+}

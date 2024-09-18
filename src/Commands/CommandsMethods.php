@@ -7,7 +7,7 @@ namespace Jsimo\LaravelRepositoryPattern\Commands;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-trait  HasStub {
+trait  CommandsMethods {
 
     /**
      * Retourne le chemin d’accès du fichier stub

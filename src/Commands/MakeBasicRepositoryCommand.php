@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class MakeBasicRepositoryCommand extends GeneratorCommand {
 
-    use HasStub;
+    use CommandsMethods;
 
     public $signature = "repository:create.basic {name}";
 

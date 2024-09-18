@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 class CreateModelCommand extends GeneratorCommand{
 
-    use HasStub;
+    use CommandsMethods;
 
     public $signature = "make:repository.model {name}";
 

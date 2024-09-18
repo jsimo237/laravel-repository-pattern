@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 
 abstract class BaseRepository implements BaseRepositoryInterface {
 
-    use ProcessableTransaction;
+    use ProcessableTransaction,HasModelQuery;
 
     protected $model = null;
     protected $resource = null;
@@ -65,8 +65,7 @@ abstract class BaseRepository implements BaseRepositoryInterface {
         $query = $search["query"] ?? null;
 
         if (is_array($search) and $query and is_callable($query) ){
-            $model = $this->model->newQuery()
-                                 ->with($with)
+            $model = $this->query()->with($with)
                                  ->where(fn($q) => $query($q))
                                  ->first();
         }
@@ -81,6 +80,7 @@ abstract class BaseRepository implements BaseRepositoryInterface {
     /**
      * @param null $inputs
      * @return mixed
+     * @throws Exception
      */
     public function all($inputs = null){
         $model =  $this->model;
@@ -93,8 +93,7 @@ abstract class BaseRepository implements BaseRepositoryInterface {
 
 
         if ( !is_null($query) and is_callable($query)){
-            $model =  $model->newQuery()
-                            ->where(fn ($q) => $query($q))
+            $model =  $this->query()->where(fn ($q) => $query($q))
                             // ->when($paginate,fn ($q) => $q->paginate())
             ;
         }
@@ -129,9 +128,10 @@ abstract class BaseRepository implements BaseRepositoryInterface {
      * @param array $data
      * @return array|mixed
      * @throws ValidationException
+     * @throws Exception
      */
     public function update($search,array $data){
-        $model = $this->find($search);
+      //  $model = $this->find($search);
        // $payload = $model->validate($data,config("repository-pattern.exception_when_validate",true));
 
         $payload = $this->validate($this->validator,$data);
@@ -151,17 +151,29 @@ abstract class BaseRepository implements BaseRepositoryInterface {
     /**
      * @param Model|int|string $search
      * @return bool|mixed|null
+     * @throws Exception
      */
     public function archive($search){
         $model = $this->find($search);
         return $model->delete();
     }
 
+    /**
+     * @param Model|int|string $search
+     * @return bool|mixed|null
+     * @throws Exception
+     */
     public function delete($search){
         $model = $this->find($search);
         return $model->forceDelete();
     }
 
+    /**
+     * @param $search
+     * @param bool $exception
+     * @return array|Collection|Model|int|mixed|string|null
+     * @throws Exception
+     */
     public function show($search, $exception = false){
         $model = $this->find($search,$exception);
         return ($this->resource) ? $this->resource->make($model) : $model;

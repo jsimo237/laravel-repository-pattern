@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class MakeRepositoryCommand extends GeneratorCommand {
 
-    use HasStub;
+    use CommandsMethods;
 
     public $signature = "make:repository {name} {--model=} {--resource=} {--validator=}";
 
@@ -16,11 +16,7 @@ class MakeRepositoryCommand extends GeneratorCommand {
 
     private $config = null;
 
-    const MODELS_NAMESPACE = "App\\Models";
-    const RESOURCES_NAMESPACE = "App\\Http\\Resources";
-    const VAlIDATOR_NAMESPACE = "App\\Http\\Requests";
-
-    const NAMESPACE = "\\Reposito";
+    const NAMESPACE = "\\Repositories";
 
 
     /**
@@ -93,6 +89,8 @@ class MakeRepositoryCommand extends GeneratorCommand {
 
         $path = $this->getPath($file_path); // App\Repositories\UserManagement\UserRepository.php
 
+      //  dd($path,$file_path,$this->rootNamespace());
+
         if($this->checkAlreadyExist($path)) return ;
 
         // Next, we will generate the path to the location where this class' file should get
@@ -154,17 +152,13 @@ class MakeRepositoryCommand extends GeneratorCommand {
             'dependencies'         => $dependencies,
             'dependenciesNamespaces' => $dependenciesNamespaces,
         ];
+        $basic = ($model or $resource or $validator);
 
-        $stub = ($model or $resource or $validator) ? "repository.stub" : "basic-repository.stub";
+        $stub = $basic ? "repository.stub" : "basic-repository.stub";
 
         $content = $this->getStubContents( $this->getStubPath($stub), $stubVariables);
 
         $this->files->put($path, $content);
-
-        $this->createController([
-                $class_name,
-                $namespace."\\".$class_name
-            ]);
 
         $info = $this->type;
 
@@ -174,28 +168,44 @@ class MakeRepositoryCommand extends GeneratorCommand {
 
         $this->components->info(sprintf('%s Repository [%s] created successfully.', $info, $path));
 
+        $this->createController([
+            $class_name,
+            $namespace."\\".$class_name
+        ],($model or $resource or $validator));
+
+
     }
 
 
-    protected function createController($repository){
+    protected function createController(array $repository, $basic = true){
 
         $config = $this->config;
 
         if ($this->confirm("Do you want to create controller ?")){
 
-            $controller = $this->ask("Enter controller class name");
+            $namespace = $config['controllers_namespace'];
+            //$namespace = $this->ask("Enter controller namespace",$config['controllers_namespace']);
+            $controller = $this->ask("Enter controller class name"); // UsersManagement\UserController
 
+           // $class_name = Str::studly(class_basename($controller));
             $controller_filename = Str::studly(class_basename($controller));
 
-            $namespace = $config['controllers_namespace']."\\".$controller; // App\\Http\\Controller\\User
+
             $suffix = "Controller";
             if (!str_contains($controller_filename,$suffix)){
                 $controller_filename  .= $suffix;
-              //  $validator_filename .= " as $validator_filename ";
             }
 
-            $path = '';
-            $this->makeDirectory($path);
+            $namespace = $this->getNamespace($namespace."\\".$controller); // App\Http\Controllers\UsersManagement
+            //$namespace = $namespace."\\".$controller_filename; // App\Http\Controller\UsersManagement\UserController
+           // $file_path = $this->qualifyClass($controller,"Controller"); // App\Repositories\UserManagement\UserRepository
+
+           // $class_name = Str::studly(class_basename($file_path)); // UserRepository
+
+            $path = $this->getPath($namespace."\\".$controller_filename); // App\Repositories\UserManagement\UserRepository.php
+
+           // dd($path);
+            if(!$this->checkAlreadyExist($path))  $this->makeDirectory($path);
 
             [$repositoryFileName, $repositoryNamespace] = $repository;
 
@@ -205,12 +215,15 @@ class MakeRepositoryCommand extends GeneratorCommand {
 
             $stubVariables = [
                 'namespace'            => $namespace,
-            'class'                  => $controller_filename,
-                'repository'         => $repositoryFileName,
-                'repositoryNamespace' => $repositoryNamespace,
+                'class'                => $controller_filename,
+                'repository'           => $repositoryFileName,
+                'repositoryNamespace'  => $repositoryNamespace,
             ];
 
-            $content = $this->getStubContents( $this->getStubPath("controller.stub"), $stubVariables);
+           // dd($stubVariables,$path);
+            $stub = ($basic) ? "controller.stub" : "basic-controller.stub";
+
+            $content = $this->getStubContents( $this->getStubPath($stub), $stubVariables);
 
             $this->files->put($path, $content);
 

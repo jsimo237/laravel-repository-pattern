@@ -7,8 +7,6 @@ use Jsimo\LaravelRepositoryPattern\Pattern\BaseRepository;
 
 class {{ class }} extends BaseRepository {
 
-     private $returnResource = false;
-
      public function __construct(){
         parent::__construct({{ dependencies }});
      }
