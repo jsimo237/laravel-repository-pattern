@@ -61,9 +61,6 @@
             "providers": [
                 "Jsimo\\LaravelRepositoryPattern\\ServiceProvider"
             ]
-        },
-        "branch-alias": {
-            "main": "main-dev"
         }
     }
 }
