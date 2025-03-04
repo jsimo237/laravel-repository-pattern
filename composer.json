@@ -21,16 +21,16 @@
         "laravel skeleton",
         "laravel boilerplate"
     ],
-    "homepage" : "https://github.com/Jsimo/laravel-repository-pattern",
+    "homepage" : "https://github.com/jsimo237/laravel-repository-pattern",
     "support" : {
-        "issues" : "https://github.com/Jsimo/laravel-repository-pattern/issues"
+        "issues" : "https://github.com/jsimo237/laravel-repository-pattern/issues"
     },
     "authors" : [
         {
             "name" : "Simo Joel",
             "email" : "joelsimooverride@gmail.com",
             "role": "Developper",
-            "homepage": "https://xpeedy.com"
+            "homepage": "https://github.com/jsimo237"
         }
     ],
     "license" : "MIT",
