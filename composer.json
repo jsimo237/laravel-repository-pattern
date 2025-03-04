@@ -1,5 +1,5 @@
 {
-    "name" : "jsimo/laravel-repository-pattern",
+    "name" : "kirago/laravel-repository-pattern",
     "type" : "library",
     "description" : "A Laravel Repository - Pattern",
     "keywords": [
